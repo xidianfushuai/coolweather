@@ -19,6 +19,7 @@ public class CoolWeatherDB {
 	private static CoolWeatherDB coolWeatherDB;
 	private SQLiteDatabase db;
 	//将构造方法私有化
+	//CoolWeatherDBm是一个单例类
 	private CoolWeatherDB(Context context) {
 		CoolWeatherOpenHelper dbHelper = new CoolWeatherOpenHelper(context, DB_NAME, null, VERSION);
 		db = dbHelper.getWritableDatabase();
@@ -42,7 +43,7 @@ public class CoolWeatherDB {
 	public List<Province> loadProvinces() {
 		List<Province> list = new ArrayList<Province>();
 		Cursor cursor = db.query("Province", null, null, null, null, null, null);
-		if (cursor.moveToNext()) {
+		if (cursor.moveToFirst()) {
 			do {
 				Province province = new Province();
 				province.setId(cursor.getInt(cursor.getColumnIndex("id")));
@@ -50,10 +51,10 @@ public class CoolWeatherDB {
 				province.setProvinceCode(cursor.getString(cursor.getColumnIndex("province_code")));
 				list.add(province);
 			} while (cursor.moveToNext());
-			if(cursor != null) 
-				cursor.close();
-			return list;
 		}
+		if(cursor != null) 
+			cursor.close();
+		return list;
 	}
 	//将City实例存储到数据库
 	public void saveCity(City city) {
@@ -70,7 +71,7 @@ public class CoolWeatherDB {
 		List<City> list = new ArrayList<City>();
 		Cursor cursor = db.query("City", null, "province_id = ?", 
 				new String[]{String.valueOf(provinceId)}, null, null, null);
-		if(cursor.moveToNext()) {
+		if(cursor.moveToFirst()) {
 			do {
 				City city = new City();
 				city.setId(cursor.getInt(cursor.getColumnIndex("id")));
@@ -100,7 +101,7 @@ public class CoolWeatherDB {
 		List<County> list = new ArrayList<County>();
 		Cursor cursor = db.query("Country", null, "cityId = ?", 
 				new String[] {String.valueOf(cityId)}, null, null, null);
-		if (cursor.moveToNext()) {
+		if (cursor.moveToFirst()) {
 			do {
 				County county = new County();
 				county.setId(cursor.getInt(cursor.getColumnIndex("id")));
