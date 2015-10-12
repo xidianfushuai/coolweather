@@ -12,6 +12,8 @@ public class AutoUpdateReceiver extends BroadcastReceiver {
 		// TODO Auto-generated method stub
 		Intent intent2 = new Intent(context, AutoUpdateService.class);
 		context.startService(intent2);
+		
+		
 	}
 
 }

@@ -5,7 +5,6 @@ package activity;
 import com.coolweather.app.R;
 
 import android.app.Activity;
-import android.app.SearchManager.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -46,24 +45,26 @@ public class WeatherActivity extends Activity implements OnClickListener{
 		temp1Text = (TextView) findViewById(R.id.temp1);
 		temp2Text = (TextView) findViewById(R.id.temp2);
 		currentDateText = (TextView) findViewById(R.id.current_date);
-		switchCity = (Button) findViewById(R.id.switch_city);
-		refreshWeather = (Button) findViewById(R.id.refresh_weather);
-		switchCity.setOnClickListener(this);
-		refreshWeather.setOnClickListener(this);
+		
 		String countyCode = getIntent().getStringExtra("county_code");
 		if (!TextUtils.isEmpty(countyCode)) {
 			//有县级代号是就去查询天气
 			publishText.setText("同步中...");
 			weatherInfoLayout.setVisibility(View.INVISIBLE);
+			cityNameText.setVisibility(View.VISIBLE);
 			queryWeatherCode(countyCode);
 		}else {
 			//没有县级代号是就直接显示本地天气
 			showWeather();
 		}
+		switchCity = (Button) findViewById(R.id.switch_city);
+		refreshWeather = (Button) findViewById(R.id.refresh_weather);
+		switchCity.setOnClickListener(this);
+		refreshWeather.setOnClickListener(this);
 	}
 	//查询县级代号所对应的县级代号
 	private void queryWeatherCode(String countyCode) {
-		String address = "http://www.weather.com.cn/data/list2/city" + countyCode + ".xml";
+		String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
 		queryFromServer(address, "countyCode");
 	}
 	//查询天气代号所对应的天气
@@ -78,7 +79,7 @@ public class WeatherActivity extends Activity implements OnClickListener{
 			@Override
 			public void onFinish(String response) {
 				if ("countyCode".equals(type)) {
-					if (!TextUtils.isEmpty(type)) {
+					if (!TextUtils.isEmpty(response)) {
 						//从服务器返回的数据中解析出天气代号
 						String[] array = response.split("\\|");
 						if (array != null && array.length == 2) {
@@ -121,7 +122,7 @@ public class WeatherActivity extends Activity implements OnClickListener{
 		temp1Text.setText(prefs.getString("temp1", ""));
 		temp2Text.setText(prefs.getString("temp2", ""));
 		weatherDespText.setText(prefs.getString("weather_desp", ""));
-		publishText.setText(prefs.getString("publish_time", "") + "发布");
+		publishText.setText("今天" + prefs.getString("publish_time", "") + "发布");
 		currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.INVISIBLE);
