@@ -32,7 +32,7 @@ public class HttpUtil {
 					}
 				}
 				catch (Exception e) {
-					if (connection != null) {
+					if (listener != null) {
 						//回调onError方法
 						listener.onError(e);
 					}
